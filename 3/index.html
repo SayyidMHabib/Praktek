@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal 3</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;900&display=swap');
+
+        input {
+            caret-color: red;
+        }
+
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ecf0f3;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            justify-content: center;
+            place-items: center;
+            overflow: hidden;
+            font-family: poppins;
+        }
+
+        .container {
+            position: relative;
+            width: 500px;
+            height: 650px;
+            border-radius: 20px;
+            padding: 40px;
+            box-sizing: border-box;
+            background: #ecf0f3;
+            box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
+        }
+
+        .inputs {
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        label,
+        input,
+        button {
+            display: block;
+            width: 100%;
+            padding: 0;
+            border: none;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        label {
+            margin-bottom: 4px;
+        }
+
+        label:nth-of-type(2) {
+            margin-top: 12px;
+        }
+
+        input::placeholder {
+            color: gray;
+        }
+
+        input {
+            background: #ecf0f3;
+            padding: 10px;
+            padding-left: 20px;
+            height: 50px;
+            font-size: 14px;
+            border-radius: 50px;
+            box-shadow: inset 6px 6px 6px #cbced1, inset -6px -6px 6px white;
+        }
+
+        button {
+            color: white;
+            margin-top: 20px;
+            background: #1DA1F2;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 900;
+            box-shadow: 6px 6px 6px #cbced1, -6px -6px 6px white;
+            transition: 0.5s;
+        }
+
+        button:hover {
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h4 style="text-align: center;">Mencari kombinasi botol dengan range bilangan prima untuk memenuhi total
+            kapasitas
+        </h4>
+        <div class="inputs">
+            <input type="number" min="1" placeholder="Masukkan Bilangan Prima Pertama" id="awal" name="awal" value="1">
+        </div>
+        <div class="inputs">
+            <input type="number" max="30" placeholder="Masukkan Bilangan Prima Terakhir" id="akhir" name="akhir"
+                value="30">
+        </div>
+        <div class="inputs">
+            <input type="number" min="100" max="10000000" placeholder="Masukkan Total Kapasitas" id="total" name="total"
+                value="100">
+        </div>
+        <button type="submit" onclick="cek()">Cek</button>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title" style="text-align: center;">Hasil</h2>
+                <p class="card-text" id="hasil"></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    function cek() {
+        const angka_awal = document.getElementById('awal').value;
+        const angka_akhir = document.getElementById('akhir').value;
+
+        var botol = [];
+        var html = "";
+        var x = document.getElementById('total').value;
+
+        html += "Total Kapasitas : " + x + "<br><br>";
+        html += "Bilangan Prima antara " + angka_awal + " sampai dengan " + angka_akhir + " : <br>";
+
+
+        // looping from angka_awal to angka_akhir
+        for (let i = angka_awal; i <= angka_akhir; i++) {
+            let flag = 0;
+
+            // looping through 2 to user input number
+            for (let j = 2; j < i; j++) {
+                if (i % j == 0) {
+                    flag = 1;
+                    break;
+                }
+            }
+
+            // if number greater than 1 and not divisible by other numbers
+            if (i > 1 && flag == 0) {
+                // console.log(i);
+                botol.push(i);
+            }
+        }
+
+        // console.log(botol);
+        html += "{" + botol + "}<br><br>";
+
+        botol.sort(function (a, b) {
+            return b - a;
+        });
+
+        for (var i = 0; i < botol.length; i++) {
+            var hasil = Math.floor(x / botol[i]);
+
+            var sisa = x % botol[i];
+
+            x = sisa;
+
+            if (hasil >= 1) {
+                var print = "Botol dengan kapasitas " + botol[i] + " berjumlah : " + hasil + " buah<br>"
+                // console.log(print);
+                html += print;
+            }
+        }
+
+        var hasil = document.getElementById("hasil");
+        hasil.innerHTML = html;
+    }
+</script>
