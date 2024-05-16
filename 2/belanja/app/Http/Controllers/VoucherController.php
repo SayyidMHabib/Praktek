@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Belanja;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ class VoucherController extends Controller
     public function index()
     {
         $voucher = Voucher::where('user_id', auth()->user()->id)->get();
-        // dd($belanja->total);
         return DataTables::of($voucher)
             ->addIndexColumn()
             ->addColumn('tanggal', fn ($voucher) => $voucher->created_at->format('Y-m-d'))

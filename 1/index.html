@@ -115,6 +115,11 @@
 
 </html>
 <script>
+    function cek() {
+        var data = document.getElementById('data');
+        PrintHasil(data.value);
+    }
+
     function PrintHasil(arr) {
         let curr_max = 0;
         let last_entry = 0;
@@ -122,32 +127,34 @@
 
         var html = '';
         for (let i = 0; i < arr.length; i++) {
-            let noOfNextD = 0;
+            let ofNext = 0;
 
             switch (arr[i]) {
                 case 'N':
                     n = i + 1;
                     while (n < arr.length && arr[n] == 'M') {
-                        noOfNextD++;
+                        ofNext++;
                         n++;
                     }
 
                     if (i == 0) {
-                        curr_max = noOfNextD + 2;
+                        curr_max = ofNext + 2;
 
                         html += " " + ++last_entry;
+
                         html += " " + curr_max;
 
                         last_entry = curr_max;
+
                     } else {
-                        curr_max = curr_max + noOfNextD + 1;
+                        curr_max = curr_max + ofNext + 1;
 
                         last_entry = curr_max;
 
                         html += " " + last_entry;
                     }
 
-                    for (let k = 0; k < noOfNextD; k++) {
+                    for (let k = 0; k < ofNext; k++) {
 
                         html += " " + --last_entry;
                         i++;
@@ -158,15 +165,16 @@
                     if (i == 0) {
                         n = i + 1;
                         while (n < arr.length && arr[n] == 'M') {
-                            noOfNextD++;
+                            ofNext++;
                             n++;
                         }
 
-                        curr_max = noOfNextD + 2;
+                        curr_max = ofNext + 2;
 
                         html += " " + curr_max + " " + (curr_max - 1);
 
                         last_entry = curr_max - 1;
+
                     } else {
                         html += " " + (last_entry - 1);
                         last_entry--;
@@ -176,10 +184,5 @@
             var hasil = document.getElementById("hasil");
             hasil.innerHTML = html;
         }
-    }
-
-    function cek() {
-        var data = document.getElementById('data');
-        PrintHasil(data.value);
     }
 </script>

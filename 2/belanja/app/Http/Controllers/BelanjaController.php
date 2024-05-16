@@ -86,7 +86,8 @@ class BelanjaController extends Controller
      */
     public function show(Belanja $belanja)
     {
-        $data = Voucher::where('kode_belanja', $belanja->kode_belanja)->where('status', 0)->whereBetween('created_at', [Carbon::now()->subMonth(4), Carbon::now()])->first();
+        // $data = Voucher::where('kode_belanja', $belanja->kode_belanja)->where('status', 0)->whereBetween('created_at', [Carbon::now(), Carbon::now()->addMonths(4)])->first();
+        $data = Voucher::where('kode_belanja', $belanja->kode_belanja)->get();
 
         return response()->json(['result' => $data]);
     }
@@ -112,9 +113,11 @@ class BelanjaController extends Controller
      */
     public function destroy(Belanja $belanja)
     {
-        // dd($belanja);
         $data = Belanja::find($belanja->id);
+        // dd($data->kode_belanja);
+
         Belanja::where('id', $belanja->id)->delete();
+        Voucher::where('kode_belanja', $data->kode_belanja)->delete();
         return new BelanjaResource(true, 'Data Belanja Berhasil Dihapus!', $data);
     }
 }

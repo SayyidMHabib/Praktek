@@ -61,11 +61,11 @@
                                 <div class="row">
                                     <div class="col-5">
                                         <input type="text" class="form-control" name="item" id="item"
-                                            placeholder="Item Belanja">
+                                            placeholder="Masukkan Nama Item">
                                     </div>
                                     <div class="col-5">
                                         <input type="number" class="form-control" name="harga" id="harga"
-                                            placeholder="Harga Belanja">
+                                            placeholder="Masukkan Harga Item">
                                     </div>
                                     <div class="col-2">
                                         <a class="badge bg-success mt-2 addMore" name="add_belanja" id="add_belanja"
@@ -205,7 +205,7 @@
         function show_voucher() {
             var tampil_voucher = document.getElementById("tampil_voucher");
             tampil_voucher.innerHTML =
-                "<label for='voucher' class='form-label'>Voucher</label><div class='form-group'><a class='badge bg-success position-absolute end-0 mt-2' name='cek_voucher' id='cek_voucher' onclick='cek_voucher();'>Cek Voucher</a><input type='text' class='form-control' id='invoice' name='invoice' placeholder='Invoice Transaksi' required></div>";
+                "<label for='voucher' class='form-label'>Cek Voucher</label><div class='form-group'><a class='badge bg-success position-absolute end-0 mt-2' name='cek_voucher' id='cek_voucher' onclick='cek_voucher();'>Cek Voucher</a><input type='text' class='form-control' id='invoice' name='invoice' placeholder='Masukkan Invoice Transaksi' required></div>";
         }
 
         function remove(prg) {
@@ -223,30 +223,70 @@
 
         function cek_voucher() {
             var kode = document.getElementById('invoice').value;
+            var today = new Date();
+            var todayLater = new Date();
+            var day = today.getDate();
+            var month = today.getMonth() + 1;
+            var year = today.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+            today = year + '-' + month + '-' + day;
 
             $.ajax({
                 url: '/belanja/' + kode,
                 type: 'GET',
                 dataType: "json",
                 success: function(response) {
-                    console.log(response.result);
                     var hasil_voucher = document.getElementById('hasil_voucher');
-                    if (response.result != null) {
-                        hasil_voucher.innerHTML =
-                            "<div class='alert alert-success alert-dismissible fade show' role='alert'>Voucher berhasil digunakan. Anda mendapat potongan harga Rp. 10.000</div>";
+                    if (response.result) {
+                        var data = JSON.parse(JSON.stringify(response.result[0]));
+                        var dateLater = addMonths(data.created_at, 4);
+                        if (today >= data.created_at && today <= dateLater) {
+                            if (data.status == 0) {
+                                hasil_voucher.innerHTML =
+                                    "<div class='alert alert-success alert-dismissible fade show' role='alert'>Voucher berhasil digunakan. Anda mendapat potongan harga Rp. 10.000</div>";
 
-                        var total = document.getElementById("total");
-                        if (total.value >= 10000) {
-                            total.value = total.value - 10000;
+                                var total = document.getElementById("total");
+                                if (total.value >= 10000) {
+                                    total.value = total.value - 10000;
+                                } else {
+                                    total.value = 0;
+                                }
+                            } else {
+                                hasil_voucher.innerHTML =
+                                    "<div class='alert alert-danger alert-dismissible fade show' role='alert'>Voucher sudah digunakan !!!</div>";
+                            }
                         } else {
-                            total.value = 0;
+                            hasil_voucher.innerHTML =
+                                "<div class='alert alert-danger alert-dismissible fade show' role='alert'>Voucher sudah kadaluarsa !!!</div>";
                         }
                     } else {
                         hasil_voucher.innerHTML =
-                            "<div class='alert alert-danger alert-dismissible fade show' role='alert'>Voucher tidak tersedia !!!</div>";
+                            "<div class='alert alert-warning alert-dismissible fade show' role='alert'>Masukkan Voucher !!!</div>";
                     }
                 }
             });
+        }
+
+        function addMonths(date, months) {
+            let tgl = new Date(date);
+            let day = tgl.getDate();
+            let month = tgl.getMonth() + months;
+            let year = tgl.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+
+            tgl = year + '-' + month + '-' + day;
+
+            return tgl;
         }
 
         function simpan(id) {
